@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import uuid from 'uuid';
 
  
  class App extends Component {
@@ -10,6 +10,8 @@ import React, { Component } from 'react'
     musicbrainzTitles: [], 
     iTunesResults: []
   };
+
+ 
 
   handleChange = (event) => {
    this.setState({ value: event.target.value })
@@ -25,15 +27,28 @@ import React, { Component } from 'react'
     })
   }
 
-  // tracksAndArtists = (itunesTitles, itunesArtists) => {
-  //   const tracksArtistList = {}
-  //   itunesTitles.map
-  // }
+  renderRows = () => {
+     let rows = [];
+      Object.entries(this.state.iTunesResults).forEach((entry, i) => {
+        rows.push(
+          <tr key={i}>
+            <td style = {{textAlign: "center"}} 
+            onClick={this.getSelectedSong} value={entry[0]}>{entry[0]}</td> 
+            <td style={{textAlign: "center"}}>{entry[1]}</td>
+          </tr>
+        )
+      })
+     return rows;
+  }
+
+  getSelectedSong = (event) => {
+    console.log(event.target.value)
+  }
   
   
   render() {
-    console.log(this.state.iTunesResults) 
-    const { discogsTitles } = this.state
+
+    const { iTunesResults } = this.state
     return (
       <>
       <div>
@@ -46,9 +61,16 @@ import React, { Component } from 'react'
         </form>
       </div>
       <div>
-        {discogsTitles && discogsTitles.map(titles => {
-          return <h3>{titles}</h3>
-        })}
+        <table>
+          <thead>
+            <th style={{textDecoration: "underline"}}>Titles</th>
+            <th style={{textDecoration: "underline"}}>Artists</th>
+          </thead>
+          <tbody>
+            {this.renderRows()}
+          </tbody>
+        </table>
+     
       </div>
       </>
     )
