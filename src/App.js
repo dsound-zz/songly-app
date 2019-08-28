@@ -6,10 +6,8 @@ import uuid from 'uuid';
   
   state = { 
     value: '',
-    discogTitles: [],
-    musicbrainzTitles: [], 
-    iTunesResults: []
-  };
+    musicbrainzResults: []
+   };
 
  
 
@@ -22,33 +20,35 @@ import uuid from 'uuid';
     fetch(`http://localhost:9000/api/v1/search/${this.state.value}`)
     .then(res => res.json())
     .then(results => {
-      this.setState({ iTunesResults: results.iTunes })
-      
+      this.setState({ musicbrainzResults: results })
     })
-  }
+  };
 
   renderRows = () => {
+    const { musicbrainzResults } = this.state
      let rows = [];
-      Object.entries(this.state.iTunesResults).forEach((entry, i) => {
+     let i = 0;
+     if (musicbrainzResults.titles || musicbrainzResults.names) {
+      while (i < musicbrainzResults.titles.length && i < musicbrainzResults.names.length) {
         rows.push(
-          <tr key={i}>
+          <tr key={musicbrainzResults.id[i]}>
             <td style = {{textAlign: "center"}} 
-            onClick={this.getSelectedSong} value={entry[0]}>{entry[0]}</td> 
-            <td style={{textAlign: "center"}}>{entry[1]}</td>
+            onClick={this.getSelectedSong} value={musicbrainzResults.id[i]}>{musicbrainzResults.titles[i]}</td> 
+            <td style = {{textAlign: "center"}}>{musicbrainzResults.names[i]}</td>
           </tr>
         )
-      })
-     return rows;
+        i++;
+       }
+       return rows;
+    }
   }
 
   getSelectedSong = (event) => {
-    console.log(event.target.value)
+    console.log(event.currentTarget.getAttribute('value'))
   }
-  
-  
+    
   render() {
-
-    const { iTunesResults } = this.state
+    const { musicbrainzResults } = this.state
     return (
       <>
       <div>
