@@ -29,12 +29,12 @@ import uuid from 'uuid';
      let rows = [];
      let i = 0;
      if (musicbrainzResults.titles || musicbrainzResults.names) {
-      while (i < musicbrainzResults.titles.length && i < musicbrainzResults.names.length) {
+      while (i < musicbrainzResults.titles.length && i < musicbrainzResults.artists.length) {
         rows.push(
           <tr key={musicbrainzResults.id[i]}>
             <td style = {{textAlign: "center"}} 
             onClick={this.getSelectedSong} value={musicbrainzResults.id[i]}>{musicbrainzResults.titles[i]}</td> 
-            <td style = {{textAlign: "center"}}>{musicbrainzResults.names[i]}</td>
+            <td style = {{textAlign: "center"}}>{musicbrainzResults.artists[i]}</td>
           </tr>
         )
         i++;
@@ -44,7 +44,22 @@ import uuid from 'uuid';
   }
 
   getSelectedSong = (event) => {
-    console.log(event.currentTarget.getAttribute('value'))
+    const id = event.currentTarget.getAttribute('value')
+    const title = event.currentTarget.innerText
+    const artist = event.currentTarget.nextElementSibling.innerText
+    fetch(`http://localhost:9000/api/v1/selected/`, {
+      method: 'POST', 
+      headers: {
+        "Content-Type": "application/json",
+        "Accepted": "application/json" 
+      },
+      body: JSON.stringify({
+        recording_id: id,
+        artist: artist,
+        title: title
+      })
+    })
+    .then(res => res).then(console.log)
   }
     
   render() {
